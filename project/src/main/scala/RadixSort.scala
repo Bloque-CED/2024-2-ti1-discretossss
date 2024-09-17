@@ -39,36 +39,63 @@ object RadixSort {
    * @return List sorted by the specific digit
    */
   def countingSortForRadix(xs: List[Int], exp: Int): List[Int] = {
-    // Get the digit in the current place (units, tens, hundreds, etc.)
-    def getDigit(num: Int, exp: Int): Int = (num / exp) % 10
-
     // Initialize counting array for digits (0-9)
     val count = Array.fill(10)(0)
 
-    // Count occurrences of each digit
-    xs.foreach { num =>
-      val digit = getDigit(num, exp)
-      count(digit) += 1
+    // Tail-recursive function to count occurrences of each digit
+    @tailrec
+    def countOccurrences(xs: List[Int]): Unit = xs match {
+      case Nil => // Base case: nothing left to process
+      case head :: tail =>
+        val digit = getDigit(head, exp)
+        count(digit) += 1
+        countOccurrences(tail)
     }
 
-    // Accumulate counts to get positions in the output array
-    for (i <- 1 until 10) {
-      count(i) += count(i - 1)
+    // Tail-recursive function to accumulate the counts
+    @tailrec
+    def accumulateCounts(index: Int): Unit = {
+      if (index >= 10) () // Base case: end of counting array
+      else {
+        if (index > 0) count(index) += count(index - 1)
+        accumulateCounts(index + 1)
+      }
     }
 
-    // Output array to hold sorted numbers based on the current digit
+    // Tail-recursive function to build the output list
+    @tailrec
+    def buildOutput(xs: List[Int], output: Array[Int], i: Int): Array[Int] = xs match {
+      case Nil => output
+      case head :: tail =>
+        val digit = getDigit(head, exp)
+        count(digit) -= 1
+        output(count(digit)) = head
+        buildOutput(tail, output, i - 1)
+    }
+
+    // Count digit occurrences
+    countOccurrences(xs)
+
+    // Accumulate counts to get positions
+    accumulateCounts(0)
+
+    // Create output array
     val output = Array.fill(xs.length)(0)
 
-    // Build the output array by placing numbers in their correct positions
-    for (i <- xs.length - 1 to 0 by -1) {
-      val num = xs(i)
-      val digit = getDigit(num, exp)
-      count(digit) -= 1
-      output(count(digit)) = num
-    }
+    // Build output array based on the current digit
+    buildOutput(xs.reverse, output, xs.length - 1).toList
+  }
 
-    // Convert the output array back to a list
-    output.toList
+  /**
+   * Function to get the digit in the current place (units, tens, hundreds, etc.).
+   * @param num The number to extract the digit from
+   * @param exp The current exponent (position of the digit)
+   * @return The digit at the current position
+   */
+  @tailrec
+  def getDigit(num: Int, exp: Int): Int = {
+    if (exp == 1) num % 10
+    else getDigit(num / 10, exp / 10)
   }
 
   /**
