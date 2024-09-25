@@ -98,12 +98,5 @@ object RadixSort {
     else getDigit(num / 10, exp / 10)
   }
 
-  /**
-   * Test the radix sort with example input.
-   */
-  def main(args: Array[String]): Unit = {
-    val unsortedList = List(170, 45, 75, 90, 802, 24, 2, 66)
-    val sortedList = radixSort(unsortedList, countingSortForRadix)
-    println(s"Sorted List: $sortedList")
-  }
+
 }

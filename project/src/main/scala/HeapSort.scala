@@ -63,10 +63,6 @@ object HeapSort {
 
   def descendingOrder(a: Int, b: Int): Boolean = a < b
 
-  // Example usage:
-  def main(args: Array[String]): Unit = {
-    val unsortedList = List(3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5)
-    println(heapSort(unsortedList, ascendingOrder)) // Output: Sorted in ascending order
-    println(heapSort(unsortedList, descendingOrder)) // Output: Sorted in descending order
-  }
+
+
 }
