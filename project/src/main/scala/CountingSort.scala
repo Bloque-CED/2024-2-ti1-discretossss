@@ -1,51 +1,82 @@
- import scala.annotation.tailrec
+
 
   object CountingSort {
 
-    /**
-     * Function that performs Counting Sort on a list of integers.
-     * This function coordinates the entire sorting process using 4 recursive helper functions.
-     *
-     * @param input List of integers to sort.
-     * @param maxValue Maximum value in the input list.
-     * @return A sorted list of integers.
-     */
+    import scala.annotation.tailrec
 
-    // First function: Count the occurrences of each element
-    @tailrec
-    def countOccurrences(input: List[Int], counts: Array[Int]): Array[Int] = input match {
-      case Nil => counts
-      case head :: tail =>
-        counts(head) += 1
-        countOccurrences(tail, counts)
+    /**
+     * Function to get the maximum value in a list
+     * @param lst the input list
+     * @return the maximum value in the list
+     */
+    def getMax(lst: List[Int]): Int = lst match {
+      case Nil => throw new NoSuchElementException("List is empty")
+      case head :: tail => tail.foldLeft(head)((max, num) => if (num > max) num else max)
     }
 
-    // Second function: Calculate cumulative sums for each position
+    /**
+     * Tail-recursive function to initialize a list of zeros of a given length
+     * @param length the length of the list
+     * @return a list of zeros of the specified length
+     */
     @tailrec
-    def computeCumulativeSums(counts: Array[Int], index: Int = 1): Array[Int] = {
-      if (index >= counts.length) counts
-      else {
-        counts(index) += counts(index - 1)
-        computeCumulativeSums(counts, index + 1)
+    def initList(length: Int, acc: List[Int] = List()): List[Int] = {
+      if (length <= 0) acc
+      else initList(length - 1, 0 :: acc)
+    }
+
+    /**
+     * Function to count the occurrences of each element in the input list
+     * @param lst the input list
+     * @param maxVal the maximum value in the list
+     * @return a list of counts where the index represents the number and the value represents the count
+     */
+    def countOccurrences(lst: List[Int], maxVal: Int): List[Int] = {
+      @tailrec
+      def countHelper(lst: List[Int], counts: List[Int]): List[Int] = lst match {
+        case Nil => counts
+        case head :: tail =>
+          val (before, after) = counts.splitAt(head)
+          countHelper(tail, before ::: (after.head + 1) :: after.tail)
+      }
+
+      countHelper(lst, initList(maxVal + 1))
+    }
+
+    /**
+     * Function to rebuild the sorted list based on the counts
+     * @param counts the list of counts
+     * @param acc accumulator for the sorted list
+     * @return the sorted list
+     */
+    @tailrec
+    def rebuildSortedList(counts: List[Int], acc: List[Int] = List(), num: Int = 0): List[Int] = counts match {
+      case Nil => acc
+      case 0 :: tail => rebuildSortedList(tail, acc, num + 1)
+      case head :: tail => rebuildSortedList((head - 1) :: tail, acc :+ num, num)
+    }
+
+    /**
+     * Function to sort the input list using the counting sort algorithm
+     * @param lst the input list
+     * @return the sorted list
+     */
+    def countingSort(lst: List[Int]): List[Int] = {
+      val maxVal = getMax(lst)
+      val counts = countOccurrences(lst, maxVal)
+      rebuildSortedList(counts)
+    }
+
+    /**
+     * Main function with an example to test countingSort
+     */
+    object CountingSortExample {
+      def main(args: Array[String]): Unit = {
+        val unsortedList = List(4, 2, 2, 8, 3, 3, 1)
+        println(s"Unsorted List: $unsortedList")
+        val sortedList = countingSort(unsortedList)
+        println(s"Sorted List: $sortedList")
       }
     }
 
-    // Third function: Build the sorted output list
-    @tailrec
-    def buildSortedList(input: List[Int], counts: Array[Int], output: Array[Int]): Array[Int] = input match {
-      case Nil => output
-      case head :: tail =>
-        counts(head) -= 1
-        output(counts(head)) = head
-        buildSortedList(tail, counts, output)
-    }
-
-    // Fourth function: Auxiliary recursive function to display the sorted array
-    @tailrec
-    def displaySortedList(lst: List[Int]): Unit = lst match {
-      case Nil => println("End of sorted list")
-      case head :: tail =>
-        println(head)
-        displaySortedList(tail)
-    }
-}
+  }
