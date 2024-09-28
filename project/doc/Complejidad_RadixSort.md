@@ -1,51 +1,78 @@
-# Complejidad del Algoritmo Radix Sort
-**El algoritmo Radix Sort ordena los números dígito por dígito, desde el dígito menos significativo 
-(unidades) hasta el más significativo (decenas, centenas, etc.). Para ordenar en cada fase (por dígito), Radix Sort suele usar 
-un algoritmo 
-eficiente como Counting Sort. Por lo tanto, la complejidad del 
-algoritmo dependerá de:**    
-- n: El número de elementos en la lista.
-- d: El número de dígitos en el número más grande de la lista.    
+# Complejidad temporal de RadixSort
+Radix Sort es un algoritmo que ordena los números dígito a dígito. Se realiza d veces, donde d es el número de dígitos del número más largo. En cada pasada, se usa un algoritmo de ordenamiento estable como Counting Sort para ordenar los números de acuerdo con el dígito actual.
 
-**La complejidad total de Radix Sort será el número de dígitos que necesitamos procesar (dígitos d) multiplicado por el tiempo 
- que nos lleva ordenar en cada fase usando Counting Sort, que tiene una complejidad de O(n + k), donde k es el rango de los dígitos (en este caso, 10, porque trabajamos con dígitos del 0 al 9).
-  Entonces, la complejidad general de Radix Sort es:**
->T(n) = O(d(n + k))      
+Para cada uno de los d dígitos Counting Sort se utiliza para ordenar los números por el dígito en cuestión.
+El algoritmo realiza d pasadas de Counting Sort, una por cada dígito del número más largo.
+Por lo tanto, el costo total será el costo de Counting Sort multiplicado por el número de dígitos d.
 
-**Dado que k (el rango de los dígitos) es una constante y es siempre 10, podemos simplificarlo a:**
->T(n) = O (d*n)    
+Ya que Counting Sort tiene una complejidad de O(n + k) y se ejecuta d veces
 
-### 2. Caso de Complejidad    
-**Mejores Casos y Peores Casos:**    
-- Mejor Caso: Radix Sort no tiene un mejor caso especial, ya que en cada fase procesa todos los elementos y sigue ordenando los dígitos. En cualquier escenario, Radix Sort tendrá la misma complejidad asintótica. 
-- Peor Caso: De manera similar, el peor caso no cambia la complejidad de Radix Sort, ya que en cada fase se ordena por dígitos sin importar el orden inicial de los números.      
+Por lo tanto, la complejidad temporal de Radix Sort es:   
+>O(d (n + k))
 
-**Por lo tanto, en todos los casos (mejor y peor), la complejidad de Radix Sort es O(d \cdot n).**     
+## Complejidad temporal de SortByDigit
+>def sortByDigit(xs: List[Int], exp: Int): List[Int] = {    
+    if (exp > maxNum) xs **En este caso, la función simplemente devuelve xs (la lista original), y esta operación tiene un costo constante de O(1) ya que sólo implica una comparación y una devolución del resultado.**     
+    else {    
+     val sortedByCurrentDigit = sortFunc(xs, exp) **Esta funcion es invocada, cuyo costo es O(n) si asumimos que sortFunc tiene una complejidad lineal. Esto es común en algunos algoritmos de ordenamiento como la ordenación por conteo.**    
+      sortByDigit(sortedByCurrentDigit, exp * 10) // **Move to the next digit**    
+     }   
+    }
+sortByDigit(xs, 1) // Start sorting by the least significant digit
+}
 
-### 3. Ecuación de Recurrencia (Counting Sort)    
-**El Counting Sort utilizado en cada fase del Radix Sort tiene la siguiente ecuación de recurrencia:**    
->T(n) = O(n + k)     
+Cada llamada recursiva tiene un costo de O(n) y hay d llamadas recursivas.    
+Por lo tanto, la complejidad temporal total es O(d⋅n) donde d es el número de dígitos y n es el tamaño de la lista.     
 
-**Esto se debe a que Counting Sort realiza dos fases principales:**    
-1. Contar las ocurrencias de cada dígito.
-2. Colocar cada número en su posición correcta en función del conteo de los dígitos.
+## Complejidad temporal de countOccurrences
+>def countOccurrences(xs: List[Int]): Unit = xs match {    
+case Nil => **Esto tiene un costo constante de O(1), ya que es una simple comprobación y retorno.**    
+case head :: tail =>    
+    val digit = getDigit(head, exp) **Extraer un dígito tiene un costo de O(1)**    
+    count(digit) += 1   
+    countOccurrences(tail)   
+}
 
-**Condiciones iniciales**    
+Cada llamada recursiva tiene un costo de O(1) (por las operaciones getDigit y el incremento del array count).
+Dado que hay n llamadas recursivas, la complejidad temporal total es O(n)
 
-- Cuando n = 1 la lista ya está ordenada, por lo que el tiempo es constante, es decir, T(1) = O(1).     
+## Complejidad temporal de accumulateCounts
+>@tailrec
+def accumulateCounts(index: Int): Unit = {
+if (index >= 10) () **En este caso, la función simplemente retorna () (valor unitario), lo cual tiene un costo constante de O(1) ya que es una simple comprobación y retorno.**    
+else {    
+if (index > 0) count(index) += count(index - 1) **Esta es una operación de acceso e incremento en un array, y tiene un costo de O(1)**    
+    accumulateCounts(index + 1)    
+ }    
+}   
 
-### 4. Forma General de la Solución      
-**En Radix Sort, el Counting Sort se ejecuta d veces (una vez por cada dígito). Como ya hemos visto, la complejidad de Counting Sort es O(n + k) por cada fase. Dado que k es una constante pequeña (10), la complejidad del algoritmo es O(n) por cada fase de Counting Sort.   
-Así que, ejecutando Counting Sort d veces, la complejidad total es O(d \cdot n).**  
+Cada llamada recursiva tiene un costo de O(1), y hay un total de 10 llamadas recursivas.
+Por lo tanto, la complejidad temporal total es O(10), que se simplifica a O(1) ya que es una constante.
+Complejidad temporal total: 
+>O(1)
 
-### Conclusión Final    
-**La complejidad asintótica de Radix Sort, sin importar el caso, es:**   
->T(n) = O (d * n)   
+## Complejidad temporal de buildOutput
+>@tailrec    
+def buildOutput(xs: List[Int], output: Array[Int], i: Int): Array[Int] = xs match {    
+case Nil => output **Esta operación tiene un costo constante de O(1), ya que implica una simple comprobación y devolución del resultado.**    
+case head :: tail =>        
+val digit = getDigit(head, exp) **La obtención de un dígito es una operación de O(1)**
+    count(digit) -= 1 Esto también tiene un costo de O(1)    
+    output(count(digit)) = head **Esta es una operación de acceso y asignación en un array, que también tiene un costo de O(1)**    
+    buildOutput(tail, output, i - 1)    
+}    
 
-**Donde:**   
-- n es el número de elementos de la lista. 
-- s el número de dígitos del número más grande.    
+Cada llamada recursiva tiene un costo de O(1)    
+Dado que hay n llamadas recursivas (una por cada elemento de la lista), la complejidad temporal total es O(n).    
 
-**Si d es constante (por ejemplo, si estamos trabajando con números que tienen un máximo de 10 dígitos), la complejidad de Radix Sort puede considerarse lineal, es decir, O(n).**
 
+**countOccurrences tiene un costo de O(n)**   
+**accumulateCounts tiene un costo de O(1)**   
+**buildOutput tiene un costo de O(n)**     
+
+La complejidad temporal para countingSortForRadix es entonces:
+>O(n)+O(1)+O(n)=O(n)
+
+Como radixSort llama a countingSortForRadix para cada uno de los d dígitos, la complejidad temporal total de radixSort es:
+>d⋅O(n)=O(d⋅n)
 
