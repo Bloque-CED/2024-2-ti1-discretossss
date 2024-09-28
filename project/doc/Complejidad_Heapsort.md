@@ -18,7 +18,37 @@ Una vez que se ha construido el max-heap, el siguiente paso es extraer repetidam
   - >O(n) + O(n log n).    
   
 Lo que nos da como resultado una complejidad temporal de:    
->O(n \log n)
+>O(n \log n) 
+
+## Complejidad temporal de siftUp
+> def siftUp(heap: List[Int], index: Int, compare: (Int, Int) => Boolean): List[Int] = {
+if (index == 0) **heap costo constante de O(1), ya que es una simple comparación y retorno del resultado.**    
+else {
+    val parentIndex = (index - 1) / 2 **operación aritmética de costo constante O(1)**   
+      if (compare(heap(index), heap(parentIndex))) { **La comparación también tiene un costo de O(1)**
+    
+     siftUp(swap(heap, index, parentIndex), parentIndex, compare) costo de O(1) ya que es una lista de tamaño fijo donde sólo se intercambian dos elementos.
+    } else {
+      heap                                              
+        }    
+      }    
+    }
+El número total de llamadas recursivas es, por lo tanto, el número de veces que podemos dividir index por 2 antes de llegar a 0. Esto corresponde a O(log n), donde n es el tamaño de la lista heap.
+Cada llamada recursiva tiene un costo de O(1)
+Dado que hay un total de O(log n) llamadas recursivas, la complejidad temporal total es
+O(log n)
+
+# Complejidad temporal de siftDown
+>@tailrec   
+def siftDown(heap: List[Int], index: Int, endIndex: Int, compare: (Int, Int) => Boolean): List[Int] = {    
+val leftChild = 2 * index + 1 **costo constante O(1)**    
+val rightChild = 2 * index + 2 **costo constante O(1)**    
+var largest = index **costo constante de O(1), ya que es una simple comprobación y retorno del resultado.**        
+if (leftChild < endIndex && compare(heap(leftChild), heap(largest))) largest = leftChild    
+if (rightChild < endIndex && compare(heap(rightChild), heap(largest))) largest = rightChild    
+if (largest != index) siftDown(swap(heap, index, largest), largest, endIndex, compare)
+else heap    
+}
 
 
 
