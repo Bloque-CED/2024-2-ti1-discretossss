@@ -6,6 +6,7 @@
 - Sebastián Cosme Benítez
 - Matthew Lane Franco
 - Juan Esteban Sotelo
+- Juan Pablo Sinisterra Fajardo
 
 ## Asignatura
 **Discretas 2**

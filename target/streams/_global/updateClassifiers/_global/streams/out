@@ -1,3 +1,4 @@
-[debug] not up to date. inChanged = true, force = false
-[debug] Updating ProjectRef(uri("file:/C:/Users/scosb/OneDrive/Desktop/Proyecto%20Discretas/2024-2-ti1-discretossss/"), "root-2024-2-ti1-discretossss")...
-[debug] Done updating ProjectRef(uri("file:/C:/Users/scosb/OneDrive/Desktop/Proyecto%20Discretas/2024-2-ti1-discretossss/"), "root-2024-2-ti1-discretossss")
+[warn] scala-library-2.12.18-sources.jar no longer exists at C:\Users\scosb\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.12.18\scala-library-2.12.18-sources.jar
+[debug] not up to date. inChanged = false, force = false
+[debug] Updating ProjectRef(uri("file:/C:/Users/juanp/Desktop/2024-2-ti1-discretossss/"), "root-2024-2-ti1-discretossss")...
+[debug] Done updating ProjectRef(uri("file:/C:/Users/juanp/Desktop/2024-2-ti1-discretossss/"), "root-2024-2-ti1-discretossss")
